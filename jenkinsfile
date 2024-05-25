@@ -41,8 +41,17 @@ pipeline {
 
         stage('Deploy') {
             steps {
-                sh 'echo Deploying to production...'
+                sshagent(['i-0679fc26d6859c50e']) {
+                    sh '''
+                    ssh -o StrictHostKeyChecking=no ubuntu@65.2.167.63 "bash -s" << 'EOF'
+                    cd /path/to/your/app
+                    git pull origin main
+                    npm install --production
+                    pm2 restart all
+                    EOF
+                    '''
                 // Add deployment scripts here
+              }
             }
         }
     }
